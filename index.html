@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Lover</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating Love Emojis in Background */
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 22px;
+            animation: floatUp 5s linear infinite;
+            z-index: 1;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .avatar-link {
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .avatar-link:active {
+            transform: scale(0.95);
+        }
+
+        .avatar-ring {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #ff007f, #00f2fe);
+            margin: 0 auto 5px auto;
+        }
+
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-section h1 {
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            background: linear-gradient(45deg, #ff007f, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
+        }
+
+        .profile-section p {
+            font-size: 9px;
+            color: #ddd;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .like-badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 10px;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .like-badge:active {
+            transform: scale(0.95);
+        }
+
+        .like-badge .sub-text {
+            color: #bbb;
+            font-size: 8px;
+        }
+
+        /* Player Card */
+        .player-card {
+            background: rgba(10, 15, 25, 0.15); 
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-info {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .song-info h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+
+        .song-info p {
+            font-size: 10px;
+            color: #ddd;
+        }
+
+        /* Timeline / Progress Bar */
+        .progress-container {
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        #progress {
+            width: 100%;
+            appearance: none;
+            height: 3px;
+            background: linear-gradient(to right, #ffffff 0%, #ffffff 0%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 100%);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #progress::-webkit-slider-thumb {
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .time-codes {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #eee;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .controls button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .controls button:active {
+            transform: scale(0.9);
+        }
+
+        #play-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Volume Bar */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #volume {
+            width: 100%;
+            appearance: none;
+            height: 3px;
+            background: linear-gradient(to right, #ffffff 100%, #ffffff 100%, rgba(255, 255, 255, 0.3) 100%, rgba(255, 255, 255, 0.3) 100%);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #volume::-webkit-slider-thumb {
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .vol-icon {
+            font-size: 10px;
+        }
+
+        /* Click Burst Animation */
+        .burst-heart {
+            position: absolute;
+            font-size: 14px;
+            animation: burstUp 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes burstUp {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--rand-x), -50px) scale(1.3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Profile & Header -->
+        <div class="profile-section">
+            <a href="https://instagram.com/rohit_tipare" target="_blank" class="avatar-link">
+                <div class="avatar-ring">
+                    <img src="profile.jpg" alt="Profile">
+                </div>
+            </a>
+            <h1>MUSIC LOVER</h1>
+            <p>MH 37 • WASHIM • MANORA</p>
+            <div class="like-badge" id="like-btn">
+                Like please 💕<br>
+                <span class="sub-text">Music by MR BABU</span>
+            </div>
+        </div>
+
+        <!-- Music Player Card -->
+        <div class="player-card">
+            <div class="song-info">
+                <h2 id="song-title">Bulleya</h2>
+                <p id="song-artist">Vishal-Shekhar</p>
+            </div>
+
+            <!-- Seek Bar / Timeline -->
+            <div class="progress-container">
+                <input type="range" id="progress" value="0" min="0" max="100">
+                <div class="time-codes">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">3:45</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="shuffle-btn">🔀</button>
+                <button id="prev-btn">⏮</button>
+                <button id="play-btn">▶</button>
+                <button id="next-btn">⏭</button>
+                <button id="repeat-btn">🔁</button>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="volume-container">
+                <span class="vol-icon">🔉</span>
+                <input type="range" id="volume" value="100" min="0" max="100">
+                <span class="vol-icon">🔊</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Background Floating Hearts Generator
+        const emojis = ['❤️', '💖', '💘', '🌸', '✨', '💕'];
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }, 400);
+
+        // Click Burst Effect on Like Badge
+        const likeBtn = document.getElementById('like-btn');
+        likeBtn.addEventListener('click', (e) => {
+            const rect = likeBtn.getBoundingClientRect();
+            const clickX = rect.left + rect.width / 2;
+            const clickY = rect.top;
+
+            for (let i = 0; i < 5; i++) {
+                const burst = document.createElement('div');
+                burst.classList.add('burst-heart');
+                burst.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                burst.style.left = clickX + 'px';
+                burst.style.top = clickY + 'px';
+                
+                const randX = (Math.random() - 0.5) * 100;
+                burst.style.setProperty('--rand-x', randX + 'px');
+                
+                document.body.appendChild(burst);
+
+                setTimeout(() => {
+                    burst.remove();
+                }, 800);
+            }
+        });
+
+        // Music Player Logic
+        const audio = new Audio();
+        const playBtn = document.getElementById('play-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const title = document.getElementById('song-title');
+        const artist = document.getElementById('song-artist');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const volumeSlider = document.getElementById('volume');
+
+        const songs = [
+            { title: "Bulleya", artist: "Vishal-Shekhar", file: "Bulleya.mp3" },
+            { title: "Chahun Main Ya Naa", artist: "Palak Muchhal", file: "Chahun_Main_Ya_Naa.mp3" },
+            { title: "Dhadak Title Track", artist: "Ajay Gogavale", file: "Dhadak.mp3" },
+            { title: "Bairan", artist: "Banjaare", file: "Bairan.mp3" },
+            { title: "Dooron Dooron", artist: "Paresh Pahuja", file: "Dooron_Dooron.mp3" },
+            { title: "Hum To Chupke", artist: "Female Version", file: "Hum_To_Chupke.mp3" },
+            { title: "Husn", artist: "Anuv Jain", file: "Husn.mp3" },
+            { title: "Ishq de Fanniyar", artist: "Jyotica Tangri", file: "Ishq_de_Fanniyar.mp3" },
+            { title: "Jeev Rangla", artist: "Ajay Gogavale", file: "Jeev_Rangla.mp3" },
+            { title: "Jhol", artist: "Aafand & Maanu", file: "Jhol.mp3" },
+            { title: "Kalank Title Track", artist: "Pritam", file: "Kalank.mp3" },
+            { title: "Khat Meri Banogi Kya", artist: "Yxsh", file: "Khat_Meri_Banogi_Kya.mp3" },
+            { title: "Majboor", artist: "OG Artist", file: "Majboor.mp3" },
+            { title: "O Rangrez", artist: "Bhaag Milkha Bhaag", file: "O_Rangrez.mp3" },
+            { title: "Ore Piya", artist: "Bumble Bee", file: "Ore_Piya.mp3" },
+            { title: "Paaro", artist: "Aditya Rikhari", file: "Paaro.mp3" },
+            { title: "Premacha Abhang", artist: "9TINX", file: "Premacha_Abhang.mp3" },
+            { title: "Raanjhan", artist: "Anand Choubey", file: "Raanjhan.mp3" },
+            { title: "Ratiyaan", artist: "Hansika Pareek", file: "Ratiyaan.mp3" },
+            { title: "Roshni Hi Roshni Hai", artist: "Gabbar", file: "Roshni_Hi_Roshni_Hai.mp3" },
+            { title: "Sapna Jahan", artist: "Ajay Gogavale", file: "Sapna_Jahan.mp3" },
+            { title: "Tu Hi Haqeeqat", artist: "Lo-fi", file: "Tu_Hi_Haqeeqat.mp3" },
+            { title: "Tu Pyaar Badha", artist: "Mohammed Shiblu", file: "Tu_Pyaar_Badha.mp3" },
+            { title: "Tujhe Dekh Dekh", artist: "Rahat Fateh Ali Khan", file: "Tujhe_Dekh_Dekh.mp3" },
+            { title: "Tujhe Dekhe Bina Chain", artist: "Romantic", file: "Tujhe_Dekhe_Bina_Chain.mp3" },
+            { title: "Udaarian", artist: "Satinder Sartaj", file: "Udaarian.mp3" }
+        ];
+
+        let songIndex = 0;
+
+        function loadSong(song) {
+            title.innerText = song.title;
+            artist.innerText = song.artist;
+            audio.src = song.file;
+        }
+
+        function playSong() {
+            playBtn.innerText = "⏸";
+            audio.play();
+        }
+
+        function pauseSong() {
+            playBtn.innerText = "▶";
+            audio.pause();
+        }
+
+        playBtn.addEventListener('click', () => {
+            const isPlaying = audio.src && !audio.paused;
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                if(!audio.src) loadSong(songs[songIndex]);
+                playSong();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            songIndex = (songIndex + 1) % songs.length;
+            loadSong(songs[songIndex]);
+            playSong();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            songIndex = (songIndex - 1 + songs.length) % songs.length;
+            loadSong(songs[songIndex]);
+            playSong();
+        });
+
+        // Timeline color splitter update
+        audio.addEventListener('timeupdate', (e) => {
+            const { duration, currentTime } = e.target;
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progress.value = progressPercent;
+                progress.style.background = `linear-gradient(to right, #ffffff ${progressPercent}%, rgba(255, 255, 255, 0.3) ${progressPercent}%)`;
+
+                let currentMinutes = Math.floor(currentTime / 60);
+                let currentSeconds = Math.floor(currentTime % 60);
+                if (currentSeconds < 10) currentSeconds = `0${currentSeconds}`;
+                currentTimeEl.innerText = `${currentMinutes}:${currentSeconds}`;
+
+                let durationMinutes = Math.floor(duration / 60);
+                let durationSeconds = Math.floor(duration % 60);
+                if (durationSeconds < 10) durationSeconds = `0${durationSeconds}`;
+                durationEl.innerText = `${durationMinutes}:${durationSeconds}`;
+            }
+        });
+
+        progress.addEventListener('input', (e) => {
+            const duration = audio.duration;
+            audio.currentTime = (e.target.value / 100) * duration;
+            progress.style.background = `linear-gradient(to right, #ffffff ${e.target.value}%, rgba(255, 255, 255, 0.3) ${e.target.value}%)`;
+        });
+
+        // Volume bar color splitter update
+        volumeSlider.addEventListener('input', (e) => {
+            audio.volume = e.target.value / 100;
+            volumeSlider.style.background = `linear-gradient(to right, #ffffff ${e.target.value}%, rgba(255, 255, 255, 0.3) ${e.target.value}%)`;
+        });
+
+        audio.addEventListener('ended', () => {
+            songIndex = (songIndex + 1) % songs.length;
+            loadSong(songs[songIndex]);
+            playSong();
+        });
+
+        loadSong(songs[songIndex]);
+    </script>
+</body>
+</html>
